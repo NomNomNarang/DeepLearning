@@ -1,54 +1,30 @@
-# DeepLearning
-My own notes so that you all guys can understand, ask any doubts free to help everyone.
+# 🧠 Sonar Object Classification using Deep Learning  
 
-#Drop out regualrization
-🔬 Sonar Object Classification using Deep Learning
+![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=flat&logo=tensorflow&logoColor=white)
+![Keras](https://img.shields.io/badge/Keras-D00000?style=flat&logo=keras&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+![Scikit-learn](https://img.shields.io/badge/Scikit--learn-F7931E?style=flat&logo=scikitlearn&logoColor=white)
 
-This project uses Artificial Neural Networks (ANN) to classify sonar signals as either Rock (R) or Mine (M).
-The dataset used is the Sonar Dataset from the UCI Machine Learning Repository.
-The model is built using TensorFlow and Keras, demonstrating how dropout regularization affects overfitting and model performance.
+> Deep Learning model that classifies sonar signals as **Rock (R)** or **Mine (M)** using an Artificial Neural Network (ANN) built with TensorFlow and Keras.
 
-🧠 Objective
 
-To build a binary classification neural network that predicts whether a sonar signal reflects off a metal cylinder (mine) or a rock, based on 60 input features extracted from sonar signals.
+## 📘 Project Overview
 
-📁 Dataset
+This project implements a **binary classification** neural network trained on the  
+🎯 [Sonar Dataset (UCI Machine Learning Repository)](https://archive.ics.uci.edu/ml/datasets/connectionist+bench+(sonar,+mines+vs.+rocks)).  
 
-Dataset Name: Sonar Dataset
+Each instance contains 60 sonar signal features, and the target label identifies whether the object is a **metal cylinder (Mine)** or a **rock (Rock)**.  
+Two models were built:
+1. **Without Dropout** – baseline model.
+2. **With Dropout Regularization** – for better generalization.
 
-Source: UCI Machine Learning Repository
+---
 
-Shape: (207, 61) — 60 features + 1 target column
+## 🧩 Model Architecture
 
-Target Variable:
+### **Model 1 – Baseline ANN**
 
-R → Rock (1 after encoding)
-
-M → Mine (0 after encoding)
-
-⚙️ Libraries Used
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import tensorflow as tf
-from tensorflow import keras
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix, classification_report
-
-🧩 Data Preprocessing
-
-Loaded the dataset using Pandas
-
-Encoded the target variable (R, M) into numeric format (1, 0)
-
-Split the data into:
-
-Training set → 80%
-
-Test set → 20%
-
-🏗️ Model Architecture
-Model 1 – Without Dropout
+python
 modeld = keras.Sequential([
     keras.layers.Dense(60, input_shape=(60,), activation='relu'),
     keras.layers.Dense(30, activation='relu'),
@@ -56,30 +32,7 @@ modeld = keras.Sequential([
     keras.layers.Dense(1, activation='sigmoid')
 ])
 
-
-Optimizer: Adam
-
-Loss Function: Binary Crossentropy
-
-Metric: Accuracy
-
-Epochs: 100
-
-Batch Size: 8
-
-Results:
-Metric	Value
-Training Accuracy	~100%
-Test Accuracy	~81%
-Precision (Class 0)	0.88
-Recall (Class 1)	0.80
-
-⚠️ The model shows signs of overfitting (training accuracy 100%, test accuracy lower).
-
-🧪 Model 2 – With Dropout Regularization
-
-To reduce overfitting, dropout layers were introduced after each Dense layer:
-
+Model 2 – With Dropout Regularization
 model = keras.Sequential([
     keras.layers.Dense(60, input_shape=(60,), activation='relu'),
     keras.layers.Dropout(0.5),
@@ -89,33 +42,30 @@ model = keras.Sequential([
     keras.layers.Dropout(0.5),
     keras.layers.Dense(1, activation='sigmoid')
 ])
+⚙️ Training Configuration
+Parameter	Value
+Optimizer	Adam
+Loss	binary_crossentropy
+Metric	accuracy
+Epochs	100
+Batch Size	8
+Validation Split	0.2
 
-Results:
+Data Split:
 
-Reduced overfitting
+python
+Copy code
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+🧾 Evaluation
+The model was evaluated using Accuracy, Confusion Matrix, and Classification Report from
+sklearn.metrics.
 
-More stable training
-
-Lower accuracy than overfitted model, but better generalization
-
-📊 Evaluation Metrics
-1. Accuracy
-
-Measures the overall correctness of the model.
-
-2. Precision
-
-Out of all samples predicted as “Mine” or “Rock”, how many were actually correct?
-
-3. Recall
-
-Out of all actual “Mine” or “Rock” samples, how many were correctly identified?
-
-4. Confusion Matrix
-
-Used to visualize model performance on test data.
-
-🧾 Classification Report (Model 1 Example)
+python
+from sklearn.metrics import classification_report, confusion_matrix
+print(classification_report(y_test, y_pred))
+📊 Example Output
+markdown
               precision    recall  f1-score   support
 
            0       0.88      0.81      0.85        27
@@ -124,42 +74,40 @@ Used to visualize model performance on test data.
     accuracy                           0.81        42
    macro avg       0.79      0.81      0.80        42
 weighted avg       0.82      0.81      0.81        42
+📉 Results Summary
+Model	Train Accuracy	Test Accuracy	Observation
+Without Dropout	~99–100%	~81%	Overfitting
+With Dropout (0.5)	~70–75%	~80–82%	Better Generalization ✅
+
 
 💡 Key Learnings
+Dropout prevents overfitting by randomly deactivating neurons during training.
 
-Precision and Recall help understand misclassifications better than accuracy alone.
+Lower training accuracy with Dropout indicates improved model generalization.
 
-Dropout layers help reduce overfitting by randomly deactivating neurons during training.
+Evaluation beyond accuracy (Precision, Recall, F1-score) gives better insights into model performance.
 
-The model can be further improved with:
+CPU-based training is slow; using a GPU can significantly improve training time.
 
-Batch Normalization
-
-Early Stopping
-
-Learning Rate Scheduling
-
-🧰 Tools & Environment
-
-Language: Python 3.12
-
-Libraries: TensorFlow, Keras, NumPy, Pandas, Scikit-learn
-
-Hardware: Intel Iris Xe (CPU-based training)
-⚙️ Note: Training on CPU took longer; using GPU would significantly reduce training time.
+🧰 Tech Stack
+Tool	Purpose
+Python	Core Language
+TensorFlow	Deep Learning Framework
+Keras	High-level API for Neural Networks
+NumPy	Numerical Computation
+Pandas	Data Manipulation
+Matplotlib	Data Visualization
+Scikit-learn	Data Splitting & Metrics
 
 📈 Future Improvements
+Add Batch Normalization
 
-Implement cross-validation for more robust accuracy.
+Apply EarlyStopping to prevent overtraining
 
-Use TensorBoard for performance visualization.
+Perform Hyperparameter Tuning using KerasTuner
 
-Experiment with different activation functions and optimizers.
+Use TensorBoard for training visualization
 
-Add batch normalization to improve training stability.
-
-✨ Author
-
-Namita Narang
-📚 Exploring Deep Learning and Neural Networks
-📊 Data Analysis | 🧠 Machine Learning | 🧩 AI Enthusiast
+🧑‍💻 Author
+👩‍💻 Namita Narang
+🎓 Deep Learning & AI Enthusiast | Data Analyst in Progress
